@@ -1,0 +1,28 @@
+%% Ham tim ra vung chua mat trai trong anh
+% Chuong trinh dua vao ty so chap lon nhat cua Sum of Square Diffrent
+% Dau vao :
+%       Ima : Anh la vung co chua mat trai.
+% Dau ra :
+%       x_mattrai : Toa do hang dau ra cua vi tri chap lon nhat
+%       y_mattrai : Toa do cot dau ra cua vi tri chap lon nhat
+% Chu y : Cac toa do ra nay chi tuong ung voi kich thuoc cua anh dau vao
+% By : Nguyen Van Linh
+% SipLab_k52, Dien tu vien thong, Dai hoc Bach Khoa Ha Noi
+function [x_mattrai,y_mattrai]=tim_mattrai(Ima)
+heso = [];
+tem_mattrai = 'mau_mat_trai\';
+file_ext = '.jpg';
+fodel_mattrai = dir([tem_mattrai,'*',file_ext]);
+soluong_mattrai = size(fodel_mattrai,1);
+for i = 1:soluong_mattrai
+    string_mattrai = [tem_mattrai,fodel_mattrai(i,1).name];
+    mau = imread(string_mattrai);
+    [I_ssd1{i},I_ncc] = template_matching_1(mau,Ima);
+    heso_mattrai = max(I_ssd1{i}(:));
+    heso = [heso heso_mattrai];
+end
+ j = find(heso==max(heso(:)));
+if(size(j,2)>=2)
+    j = max(j);
+end
+[x_mattrai,y_mattrai] = find(I_ssd1{j}==heso(j));

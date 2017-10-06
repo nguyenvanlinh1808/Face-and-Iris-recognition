@@ -1,0 +1,28 @@
+%% Ham tim ra con nguoi voi ban kinh chua biet.
+% Dau vao :
+%       img : Anh dau vao( hop anh co chua mat).
+% Dau ra  :
+%       [out] : Mot mang voi.
+%          out.si : Kich thuoc cua anh tren.
+%          out.o : Anh da tim ra va da ve vong tron.
+%          out.pic : Cat ra anh chi chua con nguoi.
+% By : Nguyen Van Linh
+% SipLab_K52, Dien tu vien thong, Dai hoc Bach Khoa Ha Noi.
+function [out]=tim_connguoi_bkchuabiet(img)
+s = size(img);
+out.si = s;
+[ci,o] = timconnguoi(img,s(2)*0.1,s(2)*0.3);
+ci = round(ci);
+out.ci = ci;
+out.o = o;
+xx1 = ci(1)-ci(3);
+xx2 = ci(1)+ci(3);
+yy1 = ci(2)-ci(3);
+yy2 = ci(2)+ci(3);
+if xx1<=0
+    x1 = ci(1)
+if (((ci(1)-ci(3))>=1) & (ci(1)+ci(3)<=s(1)) & (ci(2)-ci(3)>=1)&(ci(2)+ci(3)<=s(2)))
+    out.pic = img((ci(1)-ci(3)):(ci(1)+ci(3)),(ci(2)-ci(3)):(ci(2)+ci(3)),:);
+else
+    out.pic = img;
+end

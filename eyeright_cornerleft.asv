@@ -1,0 +1,66 @@
+%% Ham tim ra vi tri goc trai va goc phai cua con mat phai.
+% Dau vao :
+%       Imag : Anh dau vao.
+% Dau ra :
+%       eR_cL : Toa do goc trai cua mat phai.
+%       eR_cR : Toa do goc phao cua mat phai.
+%       o_eye : Duong tron bao quanh con nguoi.
+%       C1 : Toa do cot cua tam con nguoi
+%       C2 : Toa do hang cua tam con nguoi
+%       C3 : Ban kinh cua con nguoi.
+% By : Nguyen Van Linh
+% SipLab_K52, Dien tu vien thong, Dai hoc Bach Khoa Ha Noi
+function [eR_cL,eR_cR,C1,C2,C3,o_eye]=eyeright_cornerleft(Imag)
+[C1,C2,C3,o_eye] = out_iris(Imag);
+[m,n,p] = size(Imag);
+% Cat tu tam con nguoi ra hai phia trai, phai
+reg_left = Imag(1:m,1:(C1-C),:);
+reg_right = Imag(1:m,(C2+C3):n,:);
+% Bat dau lam viec voi phan ben trai
+eye1 = colorgrad(reg_left);
+se1 = [1 1 1 -1 -1 -1;1 1 -1 -1 -1 -1;1 -1 -1 -1 -1 -1;1 1 1 1 1 1];
+f1 = imfilter(eye1,se1);
+T1 = 0.3*max(max(abs(f1)));
+f1 = f1>=T1;
+for i=1:size(f1,1)
+    for j=1:size(f1,2)
+        if (j>(round(4*size(f1,2)/5)))
+            f1(i,j) = 0;
+        end
+        if (i<(C1-C3)| (i>(C1+C3)))
+            f1(i,j) = 0;
+        end
+    end
+end
+f1 = imfill(f1,'holes');
+[f2 cf] = maxregion(f1);
+f1 = imfill(f1,'holes');
+[X1 Y1] = find(f1);
+[y i] = min(Y1(:));
+x1 = X1(i); y1 = Y1(i);
+% Do diem toa do cua anh reg_left giong voi anh goc
+eR_cL = [x1,y1];
+% Bat dau lam viec voi phan ben phaii
+eye2 = rgb2gray(reg_right);
+se2 = [-1 -1 -1 1 1 1;-1 -1 -1 -1 1 1;-1 -1 -1 -1 -1 1;1 1 1 1 1 1];
+f2 = imfilter(eye2,se2);
+T2 = 0.5*max(max(abs(f2(:))));
+f2 = f2>=T2;
+for i=1:size(f2,1)
+    for j=1:size(f2,2)
+        if (j<=round(size(f2,2)/5))
+            f2(i,j) = 0;
+        end
+        if (i<(C1-C3)| (i>(C1+C3)))
+            f2(i,j) = 0;
+        end
+    end
+end
+f2 = imfill(f2,'holes');
+[f2,cf] = maxregion(f2);
+f2 = imfill(f2,'holes');
+[X2 Y2] = find(f2);
+[y i] = max(Y2(:));
+x2 = X2(i); y2 = X2(i);
+x2_root = x2; y2_root = y2+C2 + C3;
+eR_cR = [x2_root,y2_root];

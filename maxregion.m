@@ -1,0 +1,34 @@
+%% Ham tim ra vung co dien tich lon nhat
+% Dau vao:
+%  ima : Anh nhi phan dau vao
+% Dau ra:
+%  imaout : Anh nhi phan dau ra
+%  C : Trung tam cua vung co dien tich lon nhat
+% Author : Nguyen Van Linh
+% SipLab_K52, Dien tu vien thong, Dai hoc Bach Khoa Ha Noi
+function [imaout,Center_region]=maxregion(ima)
+imaout = zeros(size(ima,1),size(ima,2));
+[L num] = bwlabel(ima);
+if(L==0)
+    imaout = ima;
+    Center_region = [round(size(ima,1)/2) round(size(ima,2)/2)];
+else
+    if any(L(:))
+        ima_contro = regionprops(L,{'centroid','area'});
+        areaArray = [ima_contro.Area];
+        [p,q] = max(areaArray);
+    end
+    for k=1:num
+        if(k==q)
+            [r,c] = find(L==k);
+        end
+    end
+    rc = [r,c];
+    for k=1:size(rc,1)
+        imaout(rc(k,1),rc(k,2)) = 1;
+    end
+    imaout = imfill(imaout,'holes');
+    [L1] = bwlabel(imaout);
+    ima_contro1 = regionprops(L1,{'centroid','area'});
+    Center_region = round(ima_contro1.Centroid);
+end
